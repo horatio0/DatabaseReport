@@ -4,7 +4,7 @@ import com.example.databaseprogrammingreport.DTO.MemberInfoDTO;
 import com.example.databaseprogrammingreport.Entity.Member;
 import com.example.databaseprogrammingreport.Repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder bCryptPasswordEncoder;
 
     //Create Member
     public String join(Member member){
@@ -33,7 +33,7 @@ public class MemberService {
 
     //Check Nickname Exist
     public Boolean existByNickName(String nickname){
-        return memberRepository.existByNickname(nickname);
+        return memberRepository.existsByNickname(nickname);
     }
 
     //Read Member
@@ -51,9 +51,9 @@ public class MemberService {
     }
 
     //Update Member (Not Password)
-    public String updateMember(MemberInfoDTO memberInfoDTO){
+    public String updateMember(MemberInfoDTO memberInfoDTO, String memberId){
         try {
-            Member member = memberRepository.findById(memberInfoDTO.getMemberId()).get();
+            Member member = memberRepository.getReferenceById(memberId);
             member.setEmail(memberInfoDTO.getEmail());
             member.setName(memberInfoDTO.getName());
             member.setNickname(memberInfoDTO.getNickname());

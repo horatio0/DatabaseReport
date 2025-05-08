@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
@@ -21,7 +22,6 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
         if (request.getRequestURI().equals("/")){
             filterChain.doFilter(request, response);
             return;
@@ -43,9 +43,24 @@ public class JWTFilter extends OncePerRequestFilter {
 
         //Bearer 부분 제거 후 순수 토큰만 추출
         String token = auth.split(" ")[1];
+
         //소멸시간 검증
         if(jwtUtil.isExpired(token)){
-            filterChain.doFilter(request,response);
+            PrintWriter writer = response.getWriter();
+            writer.print("access token is expired.");
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        //access 토큰인지 확인
+        String category = jwtUtil.getCategory(token);
+        if (!category.equals("access")) {
+
+            PrintWriter writer = response.getWriter();
+            writer.print("invalid access token.");
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 

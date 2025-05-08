@@ -29,14 +29,20 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
     }
 
+    //카테고리 확인
+    public String getCategory(String token){
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
+    }
+
     //만료되었는지
     public boolean isExpired(String token){
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 
     //토큰 발급
-    public String createJwt(String id, String role, Long expiredMs){
+    public String createJwt(String category, String id, String role, Long expiredMs){
         return Jwts.builder()
+                .claim("category", category)
                 .claim("id", id)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))

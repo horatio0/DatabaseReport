@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
     private final MemberService memberService;
 
-    @PostMapping("/member")
+    @PostMapping("/member/join")
     public String join(@RequestBody() Member member){
         return memberService.join(member);
     }
@@ -35,17 +35,17 @@ public class MemberController {
     }
 
     @PutMapping("/member")
-    public String updateMember(@RequestBody() MemberInfoDTO memberInfoDTO){
-        return memberService.updateMember(memberInfoDTO);
+    public String updateMember(@RequestBody() MemberInfoDTO memberInfoDTO, @AuthenticationPrincipal UserDetails userDetails){
+        return memberService.updateMember(memberInfoDTO, userDetails.getUsername());
     }
 
     @PutMapping("/member/password")
-    public String updatePassword(@RequestBody() ){
-        return
+    public String updatePassword(@RequestBody() String password, @AuthenticationPrincipal UserDetails userDetails) {
+        return memberService.updatePassword(userDetails.getUsername(), password);
     }
 
     @DeleteMapping("/member")
-    public String deleteMember(@RequestHeader() String memberId){
-        return memberService.delete(memberId);
+    public String deleteMember(@AuthenticationPrincipal UserDetails userDetails) {
+        return memberService.delete(userDetails.getUsername());
     }
 }
