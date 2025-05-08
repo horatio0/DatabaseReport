@@ -5,6 +5,7 @@ import com.example.databaseprogrammingreport.DTO.MemberInfoDTO;
 import com.example.databaseprogrammingreport.Entity.Member;
 import com.example.databaseprogrammingreport.Service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/member/join")
-    public String join(@RequestBody() Member member){
+    public ResponseEntity<?> join(@RequestBody() Member member){
         return memberService.join(member);
     }
 
@@ -35,17 +36,17 @@ public class MemberController {
     }
 
     @PutMapping("/member")
-    public String updateMember(@RequestBody() MemberInfoDTO memberInfoDTO, @AuthenticationPrincipal UserDetails userDetails){
+    public ResponseEntity<?> updateMember(@RequestBody() MemberInfoDTO memberInfoDTO, @AuthenticationPrincipal UserDetails userDetails){
         return memberService.updateMember(memberInfoDTO, userDetails.getUsername());
     }
 
     @PutMapping("/member/password")
-    public String updatePassword(@RequestBody() String password, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> updatePassword(@RequestBody() String password, @AuthenticationPrincipal UserDetails userDetails) {
         return memberService.updatePassword(userDetails.getUsername(), password);
     }
 
     @DeleteMapping("/member")
-    public String deleteMember(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> deleteMember(@AuthenticationPrincipal UserDetails userDetails) {
         return memberService.delete(userDetails.getUsername());
     }
 }

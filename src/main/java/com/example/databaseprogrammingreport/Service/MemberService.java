@@ -4,6 +4,7 @@ import com.example.databaseprogrammingreport.DTO.MemberInfoDTO;
 import com.example.databaseprogrammingreport.Entity.Member;
 import com.example.databaseprogrammingreport.Repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,13 +17,13 @@ public class MemberService {
     private final PasswordEncoder bCryptPasswordEncoder;
 
     //Create Member
-    public String join(Member member){
+    public ResponseEntity<?> join(Member member){
         try {
             member.setPassword(bCryptPasswordEncoder.encode(member.getPassword()));
             memberRepository.save(member);
-            return "회원가입 성공!";
+            return ResponseEntity.ok().build();
         }catch (Exception e){
-            return "오류 발생!";
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -51,36 +52,36 @@ public class MemberService {
     }
 
     //Update Member (Not Password)
-    public String updateMember(MemberInfoDTO memberInfoDTO, String memberId){
+    public ResponseEntity<?> updateMember(MemberInfoDTO memberInfoDTO, String memberId){
         try {
             Member member = memberRepository.getReferenceById(memberId);
             member.setEmail(memberInfoDTO.getEmail());
             member.setName(memberInfoDTO.getName());
             member.setNickname(memberInfoDTO.getNickname());
             member.setPhoneNumber(memberInfoDTO.getPhoneNumber());
-            return "회원 정보 수정 성공!";
+            return ResponseEntity.ok().build();
         } catch (Exception e){
-            return "오류 발생!";
+            return ResponseEntity.badRequest().build();
         }
     }
 
     //Update Member Password
-    public String updatePassword(String memberId, String password){
+    public ResponseEntity<?> updatePassword(String memberId, String password){
         try{
             memberRepository.getReferenceById(memberId).setPassword(bCryptPasswordEncoder.encode(password));
-            return "비밀번호가 변경되었습니다!";
+            return ResponseEntity.ok().build();
         } catch (Exception e){
-            return "오류 발생!";
+            return ResponseEntity.badRequest().build();
         }
     }
 
     //Delete Member
-    public String delete(String memberId){
+    public ResponseEntity<?> delete(String memberId){
         try {
             memberRepository.deleteById(memberId);
-            return "회원 탈퇴 성공!";
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return "오류 발생!";
+            return ResponseEntity.badRequest().build();
         }
     }
 }
