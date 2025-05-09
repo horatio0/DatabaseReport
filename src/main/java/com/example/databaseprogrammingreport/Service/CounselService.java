@@ -1,9 +1,9 @@
 package com.example.databaseprogrammingreport.Service;
 
+import com.example.databaseprogrammingreport.DTO.CounselUpdateDTO;
 import com.example.databaseprogrammingreport.Entity.Counsel;
 import com.example.databaseprogrammingreport.Repository.CounselRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,33 +11,32 @@ import org.springframework.stereotype.Service;
 public class CounselService {
     private final CounselRepository counselRepository;
 
-    //C, U
-    public ResponseEntity<?> createCounsel(Counsel counsel){
-        try {
-            counselRepository.save(counsel);
-            return ResponseEntity.ok().build();
-        } catch (Exception e){
-            return ResponseEntity.badRequest().build();
-        }
+    //C
+    public void createCounsel(Counsel counsel) throws Exception{
+        counselRepository.save(counsel);
     }
 
     //R
-    public ResponseEntity<?> readCounsel(String memberId){
-        try {
-            Counsel counsel = counselRepository.findById(memberId).get();
-            return ResponseEntity.ok(counsel);
-        } catch (Exception e){
-            return ResponseEntity.badRequest().build();
-        }
+    public Counsel readCounsel(String memberId) throws Exception{
+        return counselRepository.findById(memberId).get();
+    }
+
+    //U
+    public void updateCounsel(CounselUpdateDTO counsel) throws Exception{
+        Counsel dbCounsel = counselRepository.findById(counsel.getCounselId()).get();
+        dbCounsel.setTopic(counsel.getTopic());
+        dbCounsel.setContent(counsel.getContent());
+        dbCounsel.setDate(counsel.getDate());
+        dbCounsel.setType(counsel.getType());
+        dbCounsel.setResult(counsel.getResult());
+        dbCounsel.setClientStatus(counsel.getClientStatus());
+        dbCounsel.setConfidential(counsel.isConfidential());
+
+        counselRepository.save(dbCounsel);
     }
 
     //D
-    public ResponseEntity<?> deleteCounsel(String counselId){
-        try {
-            counselRepository.deleteById(counselId);
-            return ResponseEntity.ok().build();
-        } catch (Exception e){
-            return ResponseEntity.badRequest().build();
-        }
+    public void deleteCounsel(String counselId) throws Exception{
+        counselRepository.deleteById(counselId);
     }
 }

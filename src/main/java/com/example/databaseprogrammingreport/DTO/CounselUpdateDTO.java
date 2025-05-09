@@ -1,24 +1,12 @@
-package com.example.databaseprogrammingreport.Entity;
+package com.example.databaseprogrammingreport.DTO;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
-@Entity
-@Table
-@Getter
 @Builder
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class Counsel {
-    @Id
+@Getter
+public class CounselUpdateDTO {
     private String counselId;
-
-    private String counselorId;
-    private String clientId;
-    private String createdBy;
 
     private String topic;       //주제
     private String date;        //날짜
