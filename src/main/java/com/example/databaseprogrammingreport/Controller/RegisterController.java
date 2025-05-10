@@ -1,7 +1,9 @@
 package com.example.databaseprogrammingreport.Controller;
 
+import com.example.databaseprogrammingreport.DTO.RegisterUpdateDTO;
 import com.example.databaseprogrammingreport.Entity.Register;
 import com.example.databaseprogrammingreport.Service.RegisterService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +15,7 @@ public class RegisterController {
 
     //상담 신청
     @PostMapping("/request")
-    public ResponseEntity<?> request(@RequestBody Register register){
+    public ResponseEntity<?> request(@RequestBody @Valid Register register){
         try {
             registerService.request(register);
             return ResponseEntity.ok().build();
@@ -33,11 +35,55 @@ public class RegisterController {
         }
     }
 
+    //상담 거절
+    @DeleteMapping("/register")
+    public ResponseEntity<?> reject(@RequestParam int id, @RequestBody String reason){
+        try {
+            registerService.reject(id, reason);
+            return ResponseEntity.ok().build();
+        } catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     //신청자 취소, 수락 전
-    @DeleteMapping("/client/cancel")
+    @DeleteMapping("/client/notAccept")
     public ResponseEntity<?> cancelRequestBeforeAccept(@RequestParam int id){
         try {
             registerService.cancelRequestBeforeAccept(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    //신청자 취소, 수락 후
+    @DeleteMapping("/client/accept")
+    public ResponseEntity<?> cancelRequestAfterAccept(@RequestParam int id, @RequestBody String reason){
+        try {
+            registerService.cancelRequestAfterAccept(id, reason);
+            return ResponseEntity.ok().build();
+        } catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    //상담원 취소
+    @DeleteMapping("/agent")
+    public ResponseEntity<?> cancelCounsel(@RequestParam int id, @RequestBody String reason){
+        try {
+            registerService.cancelCounsel(id, reason);
+            return ResponseEntity.ok().build();
+        } catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    //수정
+    @PutMapping("/register")
+    public ResponseEntity<?> updateCounsel(@RequestParam int id, @RequestBody RegisterUpdateDTO registerDTO){
+        try {
+            registerService.update(id, registerDTO);
             return ResponseEntity.ok().build();
         } catch (Exception e){
             return ResponseEntity.badRequest().build();

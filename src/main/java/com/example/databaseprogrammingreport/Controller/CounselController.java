@@ -3,6 +3,7 @@ package com.example.databaseprogrammingreport.Controller;
 import com.example.databaseprogrammingreport.DTO.CounselUpdateDTO;
 import com.example.databaseprogrammingreport.Entity.Counsel;
 import com.example.databaseprogrammingreport.Service.CounselService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,7 +16,7 @@ public class CounselController {
     private final CounselService counselService;
 
     @PostMapping("/counsel")
-    public ResponseEntity<?> counselWrite(@RequestBody Counsel counsel){
+    public ResponseEntity<?> counselWrite(@RequestBody @Valid Counsel counsel){
         try {
             counselService.createCounsel(counsel);
         } catch (Exception e){

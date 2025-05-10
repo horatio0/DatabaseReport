@@ -1,8 +1,7 @@
 package com.example.databaseprogrammingreport.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -13,11 +12,14 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Counsel {
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String counselId;
 
+    @NotNull
     private String counselorId;
+    @NotNull
     private String clientId;
+    @NotNull
     private String createdBy;
 
     private String topic;       //주제

@@ -4,6 +4,7 @@ package com.example.databaseprogrammingreport.Controller;
 import com.example.databaseprogrammingreport.DTO.MemberInfoDTO;
 import com.example.databaseprogrammingreport.Entity.Member;
 import com.example.databaseprogrammingreport.Service.MemberService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,8 +17,13 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/member/join")
-    public ResponseEntity<?> join(@RequestBody() Member member){
-        return memberService.join(member);
+    public ResponseEntity<?> join(@RequestBody @Valid Member member){
+        try {
+            memberService.join(member);
+            return ResponseEntity.ok().build();
+        } catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/member/existById")
@@ -31,22 +37,41 @@ public class MemberController {
     }
 
     @GetMapping("/member")
-    public MemberInfoDTO readMember(@AuthenticationPrincipal UserDetails userDetails) {
-        return memberService.readMember(userDetails.getUsername());
+    public ResponseEntity<MemberInfoDTO> readMember(@AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            return ResponseEntity.ok().body(memberService.readMember(userDetails.getUsername()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/member")
-    public ResponseEntity<?> updateMember(@RequestBody() MemberInfoDTO memberInfoDTO, @AuthenticationPrincipal UserDetails userDetails){
-        return memberService.updateMember(memberInfoDTO, userDetails.getUsername());
+    public ResponseEntity<?> updateMember(@RequestBody @Valid MemberInfoDTO memberInfoDTO, @AuthenticationPrincipal UserDetails userDetails){
+        try{
+            memberService.updateMember(memberInfoDTO, userDetails.getUsername());
+            return ResponseEntity.ok().build();
+        } catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/member/password")
     public ResponseEntity<?> updatePassword(@RequestBody() String password, @AuthenticationPrincipal UserDetails userDetails) {
-        return memberService.updatePassword(userDetails.getUsername(), password);
+        try {
+            memberService.updatePassword(userDetails.getUsername(), password);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping("/member")
     public ResponseEntity<?> deleteMember(@AuthenticationPrincipal UserDetails userDetails) {
-        return memberService.delete(userDetails.getUsername());
+        try {
+            memberService.delete(userDetails.getUsername());
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

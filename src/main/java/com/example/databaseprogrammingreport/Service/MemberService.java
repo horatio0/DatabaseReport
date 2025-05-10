@@ -17,14 +17,9 @@ public class MemberService {
     private final PasswordEncoder bCryptPasswordEncoder;
 
     //Create Member
-    public ResponseEntity<?> join(Member member){
-        try {
-            member.setPassword(bCryptPasswordEncoder.encode(member.getPassword()));
-            memberRepository.save(member);
-            return ResponseEntity.ok().build();
-        }catch (Exception e){
-            return ResponseEntity.badRequest().build();
-        }
+    public void join(Member member) throws Exception{
+        member.setPassword(bCryptPasswordEncoder.encode(member.getPassword()));
+        memberRepository.save(member);
     }
 
     //Check Member Exist
@@ -37,8 +32,13 @@ public class MemberService {
         return memberRepository.existsByNickname(nickname);
     }
 
+    //Get Name
+    public String getName(String memberId){
+        return memberRepository.findById(memberId).get().getName();
+    }
+
     //Read Member
-    public MemberInfoDTO readMember(String memberId){
+    public MemberInfoDTO readMember(String memberId) throws Exception{
         Member member = memberRepository.findById(memberId).get();
         MemberInfoDTO memberInfoDTO = MemberInfoDTO.builder()
                 .email(member.getEmail())
@@ -52,36 +52,21 @@ public class MemberService {
     }
 
     //Update Member (Not Password)
-    public ResponseEntity<?> updateMember(MemberInfoDTO memberInfoDTO, String memberId){
-        try {
-            Member member = memberRepository.getReferenceById(memberId);
-            member.setEmail(memberInfoDTO.getEmail());
-            member.setName(memberInfoDTO.getName());
-            member.setNickname(memberInfoDTO.getNickname());
-            member.setPhoneNumber(memberInfoDTO.getPhoneNumber());
-            return ResponseEntity.ok().build();
-        } catch (Exception e){
-            return ResponseEntity.badRequest().build();
-        }
+    public void updateMember(MemberInfoDTO memberInfoDTO, String memberId) throws Exception{
+        Member member = memberRepository.getReferenceById(memberId);
+        member.setEmail(memberInfoDTO.getEmail());
+        member.setName(memberInfoDTO.getName());
+        member.setNickname(memberInfoDTO.getNickname());
+        member.setPhoneNumber(memberInfoDTO.getPhoneNumber());
     }
 
     //Update Member Password
-    public ResponseEntity<?> updatePassword(String memberId, String password){
-        try{
-            memberRepository.getReferenceById(memberId).setPassword(bCryptPasswordEncoder.encode(password));
-            return ResponseEntity.ok().build();
-        } catch (Exception e){
-            return ResponseEntity.badRequest().build();
-        }
+    public void updatePassword(String memberId, String password) throws Exception{
+        memberRepository.getReferenceById(memberId).setPassword(bCryptPasswordEncoder.encode(password));
     }
 
     //Delete Member
-    public ResponseEntity<?> delete(String memberId){
-        try {
-            memberRepository.deleteById(memberId);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public void delete(String memberId) throws Exception{
+        memberRepository.deleteById(memberId);
     }
 }
