@@ -1,11 +1,20 @@
 package com.example.databaseprogrammingreport.Service;
 
 import com.example.databaseprogrammingreport.DTO.CounselUpdateDTO;
+import com.example.databaseprogrammingreport.DTO.WeekScheduleDTO;
 import com.example.databaseprogrammingreport.Entity.Counsel;
+import com.example.databaseprogrammingreport.Entity.Register;
 import com.example.databaseprogrammingreport.Repository.CounselRepository;
+import com.example.databaseprogrammingreport.Repository.RegisterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor

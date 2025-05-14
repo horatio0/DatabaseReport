@@ -17,8 +17,14 @@ public class MemberService {
     private final PasswordEncoder bCryptPasswordEncoder;
 
     //Create Member
-    public void join(Member member) throws Exception{
+    public void join(Member member, boolean isCounselor) throws Exception{
+        if (isCounselor) {
+            member.setRole("ROLE_COUNSELOR");
+        } else {
+            member.setRole("ROLE_USER");
+        }
         member.setPassword(bCryptPasswordEncoder.encode(member.getPassword()));
+
         memberRepository.save(member);
     }
 

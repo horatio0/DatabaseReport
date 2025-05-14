@@ -17,9 +17,9 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/member/join")
-    public ResponseEntity<?> join(@RequestBody @Valid Member member){
+    public ResponseEntity<?> join(@RequestBody @Valid Member member, @RequestParam boolean isCounselor){
         try {
-            memberService.join(member);
+            memberService.join(member, isCounselor);
             return ResponseEntity.ok().build();
         } catch (Exception e){
             return ResponseEntity.badRequest().build();

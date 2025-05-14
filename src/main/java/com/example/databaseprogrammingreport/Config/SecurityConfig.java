@@ -70,6 +70,8 @@ public class SecurityConfig {
         http.formLogin(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/counselor/*").hasRole("COUNSELOR")
+                .requestMatchers("/client/*").hasRole("USER")
                 .requestMatchers("/login", "/error", "/favicon.ico", "/member/join","/reissue").permitAll()
                 .anyRequest().authenticated()
         );

@@ -18,6 +18,7 @@ public class Register {
     private String counselorId;
     @NotNull
     private String clientId;
+    private String clientName;
     @NotNull
     private int year;
     @NotNull
