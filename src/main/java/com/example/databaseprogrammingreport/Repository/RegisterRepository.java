@@ -23,4 +23,9 @@ public interface RegisterRepository extends JpaRepository<Register, Integer> {
             @Param("year2") int endYear, @Param("month2") int endMonth, @Param("day2") int endDay
     );
 
+    List<Register> findAllByYearAndMonthAndDay(int year, int month, int day);
+    List<Register> findAllByCounselorId(String counselorId);
+    List<Register> findAllByClientId(String clientId);
+
+    List<Register> findAllByCounselorIdAndYearAndMonthAndDay(String counselorId, int year, int month, int day);
 }

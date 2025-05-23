@@ -13,9 +13,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MessageService {
     private final MessageRepository messageRepository;
+    private final MemberService memberService;
 
     //발송
-    public void send(Message message) throws Exception{
+    public void send(Message message, String sender) throws Exception{
+        message.setSenderId(sender);
+        message.setSenderName(memberService.getName(sender));
         message.setIsRead(Boolean.FALSE);
         messageRepository.save(message);
     }
@@ -25,15 +28,19 @@ public class MessageService {
         return messageRepository.findAllByReceiverId(receiverId);
     }
 
-    //메세지 확인
-    public Message getMessage(int id){
-        Message message = messageRepository.findById(id).get();
-        message.setIsRead(Boolean.TRUE);
-        return message;
+//    //메세지 확인
+//    public Message getMessage(long id){
+//        Message message = messageRepository.findById(id).get();
+//        message.setIsRead(Boolean.TRUE);
+//        return message;
+//    }
+
+    public void read(long id){
+        messageRepository.findById(id).get().setIsRead(Boolean.TRUE);
     }
 
     //삭제
-    public void delete(int id){
+    public void delete(long id){
         messageRepository.deleteById(id);
     }
 

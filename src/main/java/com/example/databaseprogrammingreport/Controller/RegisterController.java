@@ -1,7 +1,10 @@
 package com.example.databaseprogrammingreport.Controller;
 
+import com.example.databaseprogrammingreport.DTO.MyRegisterListDTO;
 import com.example.databaseprogrammingreport.DTO.RegisterUpdateDTO;
+import com.example.databaseprogrammingreport.Entity.DayScheduleDTO;
 import com.example.databaseprogrammingreport.Entity.Register;
+import com.example.databaseprogrammingreport.Entity.RegisterRequest;
 import com.example.databaseprogrammingreport.Service.RegisterService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +13,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class RegisterController {
@@ -17,16 +22,60 @@ public class RegisterController {
 
     //상담 신청
     @PostMapping("/request")
-    public ResponseEntity<?> request(@RequestBody @Valid Register register){
+    public ResponseEntity<?> request(@RequestBody @Valid RegisterRequest register, @AuthenticationPrincipal UserDetails userDetails){
         try {
-            registerService.request(register);
+            registerService.request(register, userDetails.getUsername());
             return ResponseEntity.ok().build();
         } catch (Exception e){
             return ResponseEntity.badRequest().build();
         }
     }
 
-    //일정 검색
+    //상담 신청 목록
+    @GetMapping("/myRegisters")
+    public ResponseEntity<?> getMyRegisters(@AuthenticationPrincipal UserDetails userDetails){
+        try{
+            List<MyRegisterListDTO> a = registerService.requestList(userDetails.getUsername());
+            return ResponseEntity.ok().body(a);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    //신청받은 상담 목록
+    @GetMapping("/counselor/requests")
+    public ResponseEntity<?> getRequests(@AuthenticationPrincipal UserDetails userDetails){
+        try{
+            return ResponseEntity.ok().body(registerService.getRequests(userDetails.getUsername()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    //수락한 상담 목록
+    @GetMapping("/counselor/registers")
+    public ResponseEntity<?> getRegisters(@AuthenticationPrincipal UserDetails userDetails){
+        try{
+            return ResponseEntity.ok().body(registerService.getRegisters(userDetails.getUsername()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    //일간 일정 검색
+    @GetMapping("/counselor/daySchedule")
+    public ResponseEntity<?> searchDaySchedule(@AuthenticationPrincipal UserDetails userDetails){
+        try{
+            List<DayScheduleDTO> a = registerService.readDaySchedules(userDetails.getUsername());
+            return ResponseEntity.ok()
+                    .header("today", String.valueOf(a.size()))
+                    .body(a);
+        } catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    //주간 일정 검색
     @GetMapping("/counselor/weekSchedule")
     public ResponseEntity<?> searchWeekSchedule(@AuthenticationPrincipal UserDetails userDetails){
         try{
@@ -51,7 +100,7 @@ public class RegisterController {
 
     //상담 거절
     @DeleteMapping("/counselor/register")
-    public ResponseEntity<?> reject(@RequestParam int id, @RequestBody String reason){
+    public ResponseEntity<?> reject(@RequestParam int id, @RequestParam String reason){
         try {
             registerService.reject(id, reason);
             return ResponseEntity.ok().build();
@@ -73,7 +122,7 @@ public class RegisterController {
 
     //신청자 취소, 수락 후
     @DeleteMapping("/client/accept")
-    public ResponseEntity<?> cancelRequestAfterAccept(@RequestParam int id, @RequestBody String reason){
+    public ResponseEntity<?> cancelRequestAfterAccept(@RequestParam int id, @RequestParam String reason){
         try {
             registerService.cancelRequestAfterAccept(id, reason);
             return ResponseEntity.ok().build();

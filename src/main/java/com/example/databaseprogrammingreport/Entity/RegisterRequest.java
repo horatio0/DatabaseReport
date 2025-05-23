@@ -8,11 +8,10 @@ import lombok.*;
 @Getter
 @Setter
 @Table
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Register {
-    @Id
+public class RegisterRequest {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int registerId;
 
     @NotNull

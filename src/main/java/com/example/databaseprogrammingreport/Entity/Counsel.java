@@ -13,14 +13,12 @@ import lombok.*;
 @AllArgsConstructor
 public class Counsel {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String counselId;
+    private long counselId;
+    private int registerId;
 
-    @NotNull
     private String counselorId;
     @NotNull
     private String clientId;
-    @NotNull
-    private String createdBy;
 
     private String topic;       //주제
     private String date;        //날짜

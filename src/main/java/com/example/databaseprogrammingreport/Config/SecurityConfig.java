@@ -25,11 +25,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity()
 public class SecurityConfig {
 
     private static final String[] ALLOW_ORIGINS = {
-            "http://118.218.179.22:9998"
+            "http://localhost:8080",
+            "http://localhost:63342",
+            "http://localhost:8081"
     };
 
     private static final String[] ALLOW_METHODS = {
@@ -72,7 +74,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/counselor/*").hasRole("COUNSELOR")
                 .requestMatchers("/client/*").hasRole("USER")
-                .requestMatchers("/login", "/error", "/favicon.ico", "/member/join","/reissue").permitAll()
+                .requestMatchers("/login", "/error", "/favicon.ico", "/member/join","/reissue", "/member/existByNickname", "/member/existById").permitAll()
                 .anyRequest().authenticated()
         );
         http

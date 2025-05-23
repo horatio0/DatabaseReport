@@ -12,9 +12,10 @@ import lombok.*;
 @AllArgsConstructor
 public class Message {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String messageId;
+    private long messageId;
 
     private String senderId;
+    private String senderName;
     private String receiverId;
     private String title;
     private String content;

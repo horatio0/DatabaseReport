@@ -5,6 +5,8 @@ import com.example.databaseprogrammingreport.Service.MessageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,9 +16,9 @@ public class MessageController {
 
     //발송
     @PostMapping("/message")
-    public ResponseEntity<?> send(@RequestBody @Valid Message message) throws Exception{
+    public ResponseEntity<?> send(@RequestBody @Valid Message message, @AuthenticationPrincipal UserDetails userDetails) throws Exception{
         try {
-            messageService.send(message);
+            messageService.send(message, userDetails.getUsername());
             return ResponseEntity.ok().build();
         } catch (Exception e){
             return ResponseEntity.badRequest().build();
@@ -25,27 +27,33 @@ public class MessageController {
 
     //수신 목록
     @GetMapping("/messages")
-    public ResponseEntity<?> getMessages(@RequestParam String receiverId){
+    public ResponseEntity<?> getMessages(@AuthenticationPrincipal UserDetails userDetails){
         try {
-            return ResponseEntity.ok().body(messageService.getMessages(receiverId));
+            return ResponseEntity.ok().body(messageService.getMessages(userDetails.getUsername()));
         } catch (Exception e){
             return ResponseEntity.badRequest().build();
         }
     }
 
     //메세지 확인
-    @GetMapping("/message")
-    public ResponseEntity<?> getMessage(@RequestParam int id){
-        try {
-            return ResponseEntity.ok().body(messageService.getMessage(id));
-        } catch (Exception e){
-            return ResponseEntity.badRequest().build();
-        }
+//    @GetMapping("/message")
+//    public ResponseEntity<?> getMessage(@RequestParam long id){
+//        try {
+//            return ResponseEntity.ok().body(messageService.getMessage(id));
+//        } catch (Exception e){
+//            return ResponseEntity.badRequest().build();
+//        }
+//    }
+
+    @PutMapping("/message")
+    public ResponseEntity<?> read(@RequestParam long id){
+        messageService.read(id);
+        return ResponseEntity.ok().build();
     }
 
     //삭제
     @DeleteMapping("/message")
-    public ResponseEntity<?> delete(@RequestParam int id){
+    public ResponseEntity<?> delete(@RequestParam long id){
         try {
             messageService.delete(id);
             return ResponseEntity.ok().build();
@@ -56,9 +64,9 @@ public class MessageController {
 
     //새로운 쪽지
     @GetMapping("/message/new")
-    public ResponseEntity<Boolean> isNewMessage(@RequestParam String receiverId){
+    public ResponseEntity<Boolean> isNewMessage(@AuthenticationPrincipal UserDetails userDetails){
         try {
-            return ResponseEntity.ok().body(messageService.isNewMessage(receiverId));
+            return ResponseEntity.ok().body(messageService.isNewMessage(userDetails.getUsername()));
         } catch (Exception e){
             return ResponseEntity.badRequest().build();
         }

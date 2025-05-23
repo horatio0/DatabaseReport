@@ -6,7 +6,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class CounselUpdateDTO {
-    private String counselId;
+    private long counselId;
 
     private String topic;       //주제
     private String date;        //날짜
